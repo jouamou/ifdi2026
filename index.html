@@ -192,6 +192,7 @@ td.ifdi .v { font-weight: 700; color: var(--brand-ink); }
 .lg i { width: 12px; height: 12px; border-radius: 3px; }
 .lg.avg i { width: 14px; height: 0; border-block-start: 2px dashed var(--ink); border-radius: 0; }
 #comparePanel .chart { border: 0; padding: 0; }
+#comparePanel { scroll-margin-top: 130px; }
 
 /* Country list */
 .filter input { font: inherit; padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); color: var(--ink); width: min(240px, 100%); }
@@ -1162,7 +1163,7 @@ views.country = (c) => {
   let html = `<div class="wrap stack page">
   <nav class="crumbs" aria-label="Breadcrumb"><a href="#countries">Countries</a><span aria-hidden="true">/</span><span>${esc(c)}</span></nav>
   <header class="pagehead prof"><div><p class="eyebrow">Country profile · ${esc(v.r)}${imp ? ' · <span class="pill up">Notable improver in the report</span>' : ""}</p><h1>${esc(c)}</h1></div>
-  <div class="pact"><button class="primary" type="button" data-copy-snap="${esc(c)}">Copy snapshot</button><button class="ghost" type="button" data-add="${esc(c)}">${STATE.compare.includes(c) ? "In comparison" : "Add to compare"}</button></div></header>
+  <div class="pact"><button class="primary" type="button" data-copy-snap="${esc(c)}">Copy snapshot</button><button class="ghost" type="button" data-goc="${esc(c)}">${STATE.compare.includes(c) ? "View comparison" : "Add to compare"}</button></div></header>
   <section class="pstats">
     <div class="pbig"><span class="kv">#${v.rk}</span><span class="kl">IFDI 2026 rank of 140</span><span class="kn">${moveHTML(rkMove(c))} ${esc(moveText(rkMove(c)))}</span></div>
     <div class="pbig"><span class="kv">${r[2]}</span><span class="kl">IFDI score, global average 12</span><span class="kn"><span class="dl ${d >= 0.05 ? "up" : d <= -0.05 ? "down" : ""}">${sgn(d)}</span> points since 2025</span></div>
@@ -1360,7 +1361,9 @@ function route() {
   if (h === "countries") { rankRows(); updateCompare(); }
   $$("[data-render]", main).forEach(e => ro.observe(e));
   renderCharts(main);
-  if (!route.keep) window.scrollTo(0, 0); route.keep = false;
+  if (route.cmp != null && $("#comparePanel")) { $("#comparePanel").scrollIntoView(); if (route.cmp) toast(route.cmp); route.cmp = null; }
+  else if (!route.keep) window.scrollTo(0, 0);
+  route.keep = false;
   const mm = $("#moreM"); if (mm) mm.onclick = () => { $$("#mList [hidden]").forEach(e => e.hidden = false); mm.remove(); };
   document.title = (h.startsWith("country-") && SLUGMAP[h.slice(8)] ? SLUGMAP[h.slice(8)] + " · " : "") + "IFDI 2026 Explorer";
 }
@@ -1378,6 +1381,7 @@ document.addEventListener("click", e => {
   if (t.dataset.copyAll) { copyText(D.messages.map(m => "- " + m.text).join("\n"), t); return; }
   if (t.dataset.copySnap) { copyText(snapshotText(t.dataset.copySnap), t); return; }
   if (t.dataset.jump) { e.preventDefault(); const el = document.getElementById(t.dataset.jump); if (el) el.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); return; }
+  if (t.dataset.goc) { const c = t.dataset.goc, was = STATE.compare.includes(c); if (!was) { if (STATE.compare.length >= 4) STATE.compare.shift(); STATE.compare.push(c); try { localStorage.setItem("ifdi-compare", JSON.stringify(STATE.compare)); } catch (e) { } } route.cmp = was ? "" : c + " added to the comparison"; location.hash = "countries"; return; }
   if (t.dataset.add) { addCompare(t.dataset.add, true); if ($("#cmpChips")) toast(STATE.compare.includes(t.dataset.add) ? `${t.dataset.add} added to the comparison` : `${t.dataset.add} removed`); return; }
   if (t.dataset.rm) { addCompare(t.dataset.rm, true); return; }
   if (t.dataset.reg != null) { STATE.reg = t.dataset.reg; STATE.rkAll = false; $$("#regChips .chip").forEach(b => { const on = b.dataset.reg === STATE.reg; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); }); rankRows(); if (t.dataset.scroll) $("#rankPanel").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); return; }
