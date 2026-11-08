@@ -106,6 +106,13 @@ p { margin: 0; }
 .nav a { flex: none; padding: 9px 14px 10px; color: var(--ink-2); text-decoration: none; font-family: var(--display); font-weight: 500; font-size: .95rem; border-block-end: 3px solid transparent; }
 .nav a:hover { color: var(--ink); }
 .nav a[aria-current="page"] { color: var(--brand-ink); border-color: var(--brand); font-weight: 700; }
+.nav a.nav-report { position: relative; margin-inline-start: auto; display: inline-flex; align-items: center; gap: 6px; color: var(--brand-ink); font-weight: 700; }
+.nav a.nav-report:hover { color: var(--brand); }
+.hero-cta { display: flex; flex-wrap: wrap; align-items: center; gap: 10px 14px; margin-block-start: 20px; }
+.btn-report { display: inline-flex; align-items: center; gap: 8px; background: #ffffff; color: #16365c; font-weight: 700; text-decoration: none; padding: 10px 16px; border-radius: 8px; }
+.btn-report:hover { background: #e8f4f4; }
+.btn-report:focus-visible { outline: 2px solid #5fb1b2; outline-offset: 2px; }
+.hero-cta span { color: var(--hero-ink-2); font-size: .88rem; }
 @media (max-width: 640px) { .gsearch kbd, .brand small { display: none; } .bar1 { gap: 10px; } .brand b { font-size: 1rem; } }
 
 /* Hero */
@@ -176,7 +183,7 @@ button { font: inherit; cursor: pointer; }
 .sbar i, .mb i { display: block; height: 100%; background: var(--bar); border-radius: 3px; }
 
 /* Tables */
-.tablewrap { overflow-x: auto; }
+.tablewrap { overflow-x: auto; position: relative; }
 table.rank { width: 100%; border-collapse: collapse; font-size: .95rem; }
 .rank th, .rank td { padding: 8px 10px; border-block-end: 1px solid var(--grid); text-align: start; vertical-align: middle; }
 .rank thead th { font-size: .8rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); font-weight: 700; white-space: nowrap; }
@@ -383,12 +390,13 @@ body { font-weight: 400; }
     <a href="#frontiers" data-v="frontiers">Frontiers</a>
     <a href="#kit" data-v="kit">Comms kit</a>
     <a href="#ask" data-v="ask">Ask the report</a>
+    <a href="https://www.icd-ps.org/en/featured-reports" class="nav-report" target="_blank" rel="noopener" data-report-link="nav">Download the report <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h7v7M13 3 4 12"/></svg><span class="sr"> (opens in a new tab)</span></a>
   </nav>
 </header>
 <main id="main" tabindex="-1"></main>
 <footer>
   <div class="wrap">
-    <p><b>Source.</b> All figures come from the ICD-LSEG Islamic Finance Development Report 2026, covering 2025 data for 140 countries. Page numbers refer to the report.</p>
+    <p><b>Source.</b> All figures come from the ICD-LSEG Islamic Finance Development Report 2026, covering 2025 data for 140 countries. Page numbers refer to the report. <a href="https://www.icd-ps.org/en/featured-reports" target="_blank" rel="noopener" data-report-link="footer">Download the full report on icd-ps.org<span class="sr"> (opens in a new tab)</span></a>.</p>
     <p>Iran: 2025 asset values were carried forward from the previous year because updated financial statements were not available.</p>
     <div class="gl" id="gloss"></div>
     <p>Please cite as: LSEG (2026) "Islamic Finance Development Report 2026: Growth Amid Headwinds", LSEG. The report's data is believed to be correct at publication and is for general information only.</p>
@@ -400,6 +408,7 @@ body { font-weight: 400; }
    Development Report 2026. "p" = report page. Edit here to update the whole site. */
 const DATA = {
   meta: {
+    reportUrl: "https://www.icd-ps.org/en/featured-reports",
     title: "Islamic Finance Development Report 2026",
     theme: "Growth amid headwinds",
     publishers: "ICD and LSEG",
@@ -1067,6 +1076,7 @@ views.overview = () => `
       <p class="eyebrow">Islamic Finance Development Report 2026 · Growth amid headwinds</p>
       <h1>Islamic finance reached <span class="hl">US$6.5 trillion</span> in 2025</h1>
       <p class="lede">Every number, ranking and story from the ICD-LSEG report, in one place. Ask a question or pick a section.</p>
+      <p class="hero-cta"><a class="btn-report" href="${esc(D.meta.reportUrl)}" target="_blank" rel="noopener" data-report-link="hero">Download the full report <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h7v7M13 3 4 12"/></svg></a><span>Free on icd-ps.org<span class="sr"> (opens in a new tab)</span></span></p>
     </div>
     <form class="askbox" id="heroAsk" role="search">
       <label for="heroQ" class="sr">Ask the report</label>
@@ -1341,7 +1351,7 @@ views.ask = () => {
   }
   if (pList.length) html += `<section><h2 class="sech">From the report text</h2><div class="passages">${pList.map(p => passageHTML(p, qt)).join("")}</div></section>`;
   if (!facts.length && !pList.length && !countries.length) html += `<section class="panel"><h2 class="h3">No match in the report</h2><p>Try fewer words, a country name, or one of these:</p><div class="chips">${ASK_SUGGEST.map(s => `<button type="button" class="chip" data-ask="${esc(s)}">${esc(s)}</button>`).join("")}</div></section>`;
-  html += `<p class="fine">Answers come only from the report's own figures and text. Nothing is generated.</p></div>`;
+  html += `<p class="fine">Answers come only from the report's own figures and text. Nothing is generated. For the full analysis, <a href="${esc(D.meta.reportUrl)}" target="_blank" rel="noopener" data-report-link="ask">download the report</a>.</p></div>`;
   return html;
 };
 function askForm(q) { return `<form class="askbox inline" id="pageAsk" role="search"><label for="pageQ" class="sr">Ask the report</label><div class="askrow"><input id="pageQ" type="search" value="${esc(q)}" autocomplete="off" placeholder="Ask anything"><button class="primary" type="submit">Ask</button></div></form>`; }
@@ -1454,6 +1464,8 @@ document.getElementById("gloss").innerHTML = DATA.glossary.slice(0, 8).map(g => 
     gtag("event", "page_view", { page_location: location.origin + location.pathname.replace(/\/?(index\.html)?$/, "/") + h + location.search, page_title: document.title });
   }
   window.addEventListener("hashchange", () => setTimeout(pv, 0));
+  /* Report download link clicks (outbound to icd-ps.org) */
+  document.addEventListener("click", e => { const a = e.target.closest && e.target.closest("[data-report-link]"); if (a && window.gtag) gtag("event", "report_link_click", { link_location: a.dataset.reportLink, link_url: a.href, outbound: true, transport_type: "beacon" }); }, true);
   window.addEventListener("load", () => setTimeout(pv, 0));
 })();
 </script>
