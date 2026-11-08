@@ -1443,14 +1443,15 @@ document.getElementById("gloss").innerHTML = DATA.glossary.slice(0, 8).map(g => 
 </script>
 
 <script>
-/* Google Analytics page views: each section and country profile counts as its own page, e.g. /ifdi2026/country-malaysia */
+/* Google Analytics page views: each section and country profile counts as its own page, e.g. /ifdi2026/country-malaysia.
+   location.search is kept so campaign tags (e.g. the screens QR code: ?utm_source=screens&utm_medium=qr) reach GA4. */
 (function () {
   let last = "";
   function pv() {
     if (!window.gtag) return;
     const h = (location.hash || "#overview").slice(1).split("?")[0];
     if (h === last) return; last = h;
-    gtag("event", "page_view", { page_location: location.origin + location.pathname.replace(/\/?(index\.html)?$/, "/") + h, page_title: document.title });
+    gtag("event", "page_view", { page_location: location.origin + location.pathname.replace(/\/?(index\.html)?$/, "/") + h + location.search, page_title: document.title });
   }
   window.addEventListener("hashchange", () => setTimeout(pv, 0));
   window.addEventListener("load", () => setTimeout(pv, 0));
