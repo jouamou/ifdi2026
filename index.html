@@ -390,13 +390,13 @@ body { font-weight: 400; }
     <a href="#frontiers" data-v="frontiers">Frontiers</a>
     <a href="#kit" data-v="kit">Comms kit</a>
     <a href="#ask" data-v="ask">Ask the report</a>
-    <a href="https://www.icd-ps.org/en/featured-reports" class="nav-report" target="_blank" rel="noopener" data-report-link="nav">Download the report <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h7v7M13 3 4 12"/></svg><span class="sr"> (opens in a new tab)</span></a>
+    <a href="https://www.icd-ps.org/en/featured-reports?utm_source=ifdi2026_explorer&amp;utm_medium=referral&amp;utm_campaign=ifdi2026&amp;utm_content=nav" class="nav-report" target="_blank" rel="noopener" data-report-link="nav">Download the report <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h7v7M13 3 4 12"/></svg><span class="sr"> (opens in a new tab)</span></a>
   </nav>
 </header>
 <main id="main" tabindex="-1"></main>
 <footer>
   <div class="wrap">
-    <p><b>Source.</b> All figures come from the ICD-LSEG Islamic Finance Development Report 2026, covering 2025 data for 140 countries. Page numbers refer to the report. <a href="https://www.icd-ps.org/en/featured-reports" target="_blank" rel="noopener" data-report-link="footer">Download the full report on icd-ps.org<span class="sr"> (opens in a new tab)</span></a>.</p>
+    <p><b>Source.</b> All figures come from the ICD-LSEG Islamic Finance Development Report 2026, covering 2025 data for 140 countries. Page numbers refer to the report. <a href="https://www.icd-ps.org/en/featured-reports?utm_source=ifdi2026_explorer&amp;utm_medium=referral&amp;utm_campaign=ifdi2026&amp;utm_content=footer" target="_blank" rel="noopener" data-report-link="footer">Download the full report on icd-ps.org<span class="sr"> (opens in a new tab)</span></a>.</p>
     <p>Iran: 2025 asset values were carried forward from the previous year because updated financial statements were not available.</p>
     <div class="gl" id="gloss"></div>
     <p>Please cite as: LSEG (2026) "Islamic Finance Development Report 2026: Growth Amid Headwinds", LSEG. The report's data is believed to be correct at publication and is for general information only.</p>
@@ -409,6 +409,8 @@ body { font-weight: 400; }
 const DATA = {
   meta: {
     reportUrl: "https://www.icd-ps.org/en/featured-reports",
+    /* Acquisition tags so ICD's website analytics can count visits from the Explorer, by link placement (utm_content). */
+    reportUtm: "utm_source=ifdi2026_explorer&utm_medium=referral&utm_campaign=ifdi2026",
     title: "Islamic Finance Development Report 2026",
     theme: "Growth amid headwinds",
     publishers: "ICD and LSEG",
@@ -733,6 +735,7 @@ window.LSEG = {"countries":{"Afghanistan":{"r":"South Asia","rk":26,"rk25":38,"s
 (function () {
 "use strict";
 const D = DATA;
+const reportLink = loc => D.meta.reportUrl + "?" + D.meta.reportUtm + "&utm_content=" + loc;
 const PASSAGES = window.PASSAGES || [];
 const $ = (s, r = document) => r.querySelector(s);
 const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
@@ -1076,7 +1079,7 @@ views.overview = () => `
       <p class="eyebrow">Islamic Finance Development Report 2026 · Growth amid headwinds</p>
       <h1>Islamic finance reached <span class="hl">US$6.5 trillion</span> in 2025</h1>
       <p class="lede">Every number, ranking and story from the ICD-LSEG report, in one place. Ask a question or pick a section.</p>
-      <p class="hero-cta"><a class="btn-report" href="${esc(D.meta.reportUrl)}" target="_blank" rel="noopener" data-report-link="hero">Download the full report <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h7v7M13 3 4 12"/></svg></a><span>Free on icd-ps.org<span class="sr"> (opens in a new tab)</span></span></p>
+      <p class="hero-cta"><a class="btn-report" href="${esc(reportLink("hero"))}" target="_blank" rel="noopener" data-report-link="hero">Download the full report <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 3h7v7M13 3 4 12"/></svg></a><span>Free on icd-ps.org<span class="sr"> (opens in a new tab)</span></span></p>
     </div>
     <form class="askbox" id="heroAsk" role="search">
       <label for="heroQ" class="sr">Ask the report</label>
@@ -1351,7 +1354,7 @@ views.ask = () => {
   }
   if (pList.length) html += `<section><h2 class="sech">From the report text</h2><div class="passages">${pList.map(p => passageHTML(p, qt)).join("")}</div></section>`;
   if (!facts.length && !pList.length && !countries.length) html += `<section class="panel"><h2 class="h3">No match in the report</h2><p>Try fewer words, a country name, or one of these:</p><div class="chips">${ASK_SUGGEST.map(s => `<button type="button" class="chip" data-ask="${esc(s)}">${esc(s)}</button>`).join("")}</div></section>`;
-  html += `<p class="fine">Answers come only from the report's own figures and text. Nothing is generated. For the full analysis, <a href="${esc(D.meta.reportUrl)}" target="_blank" rel="noopener" data-report-link="ask">download the report</a>.</p></div>`;
+  html += `<p class="fine">Answers come only from the report's own figures and text. Nothing is generated. For the full analysis, <a href="${esc(reportLink("ask"))}" target="_blank" rel="noopener" data-report-link="ask">download the report</a>.</p></div>`;
   return html;
 };
 function askForm(q) { return `<form class="askbox inline" id="pageAsk" role="search"><label for="pageQ" class="sr">Ask the report</label><div class="askrow"><input id="pageQ" type="search" value="${esc(q)}" autocomplete="off" placeholder="Ask anything"><button class="primary" type="submit">Ask</button></div></form>`; }
